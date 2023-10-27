@@ -1,33 +1,24 @@
-AKEFLAGS += --no-print-directory
+CC=mipsel-openwrt-linux-gcc
+PCAP_INC=~/openwrt/build_dir/target-mipsel_24kc_musl/libpcap-1.9.1/
+PCAP_LIB=~/openwrt/build_dir/target-mipsel_24kc_musl/libpcap-1.9.1/
+header=none
+target=wicap
+ext=
+des_ip=none
+des_path=~/workspace/
 
-PREFIX ?= /usr
-SBINDIR ?= $(PREFIX)/sbin
-MANDIR ?= $(PREFIX)/share/man
-PKG_CONFIG ?= pkg-config
+all: radiotap.o fc_hdr.o
+        rm -rf $(target)$(ext)
+        $(CC) $(target).c -I $(PCAP_INC) -L $(PCAP_LIB) -lpcap -o $(target)$(ext) radiotap.o fc_hdr.o
 
-MKDIR ?= mkdir -p
-INSTALL ?= install
-CC ?= "gcc"
+fc_hdr.o: fc_hdr.o
+        $(CC) -c fc_hdr.c
 
-CFLAGS ?= -MMD -O2 -g
-CFLAGS += -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common
-
-LIBS += -lpcap
-
-OBJS += ./radiotap.o
-OBJS += ./wicap.o
-
--include $(OBJS:%.o=%.d)
-
-all: wicap
-
-%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
-
-wicap: $(OBJS)
-	$(CC) -o $@ $^ $(LDFLAGS) $(LIBS)
+radiotap.o: radiotap.c radiotap.h radiotap_iter.h platform.h
+        $(CC) -c radiotap.c
 
 clean:
-	rm -f *.o wicap
+        rm -rf $(target)$(ext)
 
-.PHONY : clean
+send:
+        scp $(target)$(ext) root@$(des_ip):$(des_path)

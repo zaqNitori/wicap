@@ -1,7 +1,7 @@
 #ifndef __FC_HDR_H
 #define __FC_HDR_H
 
-extern void Show_Frame_Control_Info(unsigned short);
+
 
 struct fc_hdr {
     
@@ -96,5 +96,7 @@ enum Extension_Frame_Subtype {
     DMG_Beacon = 0,
     Reserved = 1,
 };
+
+extern void Show_Frame_Control_Info(unsigned short);
 
 #endif

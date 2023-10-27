@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "fc_hdr.h"
 
 const char* Frame_Type_String[] = {
@@ -69,9 +70,10 @@ const char* Extension_Frame_Subtype_String[] = {
     "Reserved"
 };
 
-void Show_Frame_Info(unsigned short frame_control){
+
+void Show_Frame_Control_Info(unsigned short frame_control){
     
-    int ftype;
+    enum Frame_Type ftype;
 	ftype = GET_Type(frame_control);
 	printf("\tFrame Type: %s\n", Frame_Type_String[ftype]);
 

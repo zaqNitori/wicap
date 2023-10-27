@@ -9,12 +9,13 @@
 #include <string.h>
 #include <pcap/pcap.h>
 #include "radiotap_iter.h"
+#include "fc_hdr.h"
 
 static int fcshdr = 0;
 
 #define MAC2STR(a) (a)[0], (a)[1], (a)[2], (a)[3], (a)[4], (a)[5]
 #define MACSTR "%02x:%02x:%02x:%02x:%02x:%02x"
-
+ 
 struct ieee80211_hdr {
 	unsigned short frame_control;
 	unsigned short duration_id;
@@ -187,6 +188,8 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
     printf("\tdestination address: "MACSTR"\n", MAC2STR(hdr->addr1));
     printf("\tbssid: "MACSTR"\n", MAC2STR(hdr->addr3));
 
+	Show_Frame_Control_Info(hdr->frame_control);
+
 	return;
 
 }
@@ -199,7 +202,7 @@ int main(int argc, char *argv[])
     char errbuf[PCAP_ERRBUF_SIZE];	/* Error string */
     struct bpf_program fp;		/* The compiled filter */
     char filter_exp[] = "type mgt subtype assoc-req";	/* The filter expression */
-    int num_packets = 2;			/* number of packets to capture */
+    int num_packets = 10;			/* number of packets to capture */
 
     /* check for capture device name on command-line */
 	if (argc == 2) {
@@ -211,20 +214,20 @@ int main(int argc, char *argv[])
 	}
     
     /* Open the session in promiscuous mode */
-    handle = pcap_open_live(dev, BUFSIZ, 1, 100000, errbuf);
+    handle = pcap_open_live(dev, BUFSIZ, 0, 100000, errbuf);
     if (handle == NULL) {
         fprintf(stderr, "Couldn't open device %s: %s\n", dev, errbuf);
         return(2);
     }
     /* Compile and apply the filter */
-    if (pcap_compile(handle, &fp, filter_exp, 0, netp) == -1) {
+    /*if (pcap_compile(handle, &fp, filter_exp, 0, netp) == -1) {
         fprintf(stderr, "Couldn't parse filter %s: %s\n", filter_exp, pcap_geterr(handle));
         return(2);
     }
     if (pcap_setfilter(handle, &fp) == -1) {
         fprintf(stderr, "Couldn't install filter %s: %s\n", filter_exp, pcap_geterr(handle));
         return(2);
-    }
+    }*/
     
     /* print capture info */
 	printf("Device: %s\n", dev);

@@ -35,141 +35,68 @@ struct fc_hdr {
 #define GET_HTC(hdr) (hdr >> 15 & 0x01)
 
 enum Frame_Type {
-    Management,
-    Control,
-    Data,
-    Extension,
+    Management = 0,
+    Control = 1,
+    Data = 2,
+    Extension = 3,
 };
 
-const char* Frame_Type_String[] = {
-    "Management",
-    "Control",
-    "Data",
-    "Extension"
+enum Mgmt_Frame_Subtype {
+    Association_Request = 0,
+    Association_Response = 1,
+    Reassociation_Request = 2,
+    Reassociation_Response = 3,
+    Probe_Request = 4,
+    Probe_Response = 5,
+    Timimg_Advertisement = 6,
+    Mgmt_Reserved = 7,
+    Beacon = 8,
+    ATM = 9,
+    Disassociation = 10,
+    Authentication = 11,
+    Deauthentication = 12,
+    Action = 13,
+    Action_No_Ack = 14,
 };
 
-enum Mgmt_Frame_Type {
-    Association_Request,
-    Association_Response,
-    Reassociation_Request,
-    Reassociation_Response,
-    Probe_Request,
-    Probe_Response,
-    Timimg_Advertisement,
-    Reserved,
-    Beacon,
-    ATM,
-    Disassociation,
-    Authentication,
-    Deauthentication,
-    Action,
-    Action_No_Ack,
-    Reserved
+enum Contorl_Frame_Subtype {
+    ConTrol_Reserved,
+    Beamforming_Report_Poll = 4,
+    VHT_NDP_Announcement = 5,
+    Control_Frame_Extension = 6,
+    Control_Wrapper = 7,
+    Block_Ack_Request = 8,
+    Block_Ack = 9,
+    PS_Poll = 10,
+    RTS = 11,
+    CTS = 12,
+    Ack = 13,
+    CF_End = 14,
+    CF_End_CF_Ack = 15
 };
 
-const char* Mgmt_Frame_Type_String[] = {
-    "Association_Request",
-    "Association_Response",
-    "Reassociation_Request",
-    "Reassociation_Response",
-    "Probe_Request",
-    "Probe_Response",
-    "Timimg_Advertisement",
-    "Reserved",
-    "Beacon",
-    "ATM",
-    "Disassociation",
-    "Authentication",
-    "Deauthentication",
-    "Action",
-    "Action_No_Ack",
-    "Reserved"
+enum Data_Frame_Subtype {
+    Data_Data = 0,
+    Data_CF_Ack = 1,
+    Data_CF_Poll = 2,
+    Data_CF_Ack_CF_Poll = 3,
+    Null_No_Data = 4,
+    CF_Ack_No_Data = 5,
+    CF_Poll_No_Data = 6,
+    CF_Ack_CF_Poll_No_Data = 7,
+    Qos_Data = 8,
+    Qos_Data_CF_Ack = 9,
+    Qos_Data_CF_Poll = 10,
+    Qos_Data_CF_Ack_CF_Poll = 11,
+    Qos_Null_No_Data = 12,
+    Data_Reserved = 13,
+    Qos_CF_Poll_No_Data = 14,
+    Qos_CF_Ack_CF_Poll = 15,
 };
 
-enum Contorl_Frame_Type {
-    Reserved,
-    Reserved,
-    Reserved,
-    Reserved,
-    Beamforming_Report_Poll,
-    VHT_NDP_Announcement,
-    Control_Frame_Extension,
-    Control_Wrapper,
-    Block_Ack_Request,
-    Block_Ack,
-    PS_Poll,
-    RTS,
-    CTS,
-    Ack,
-    CF_End,
-    CF_End_CF_Ack
-};
-
-const char* Contorl_Frame_Type_String[] = {
-    "Reserved",
-    "Reserved",
-    "Reserved",
-    "Reserved",
-    "Beamforming_Report_Poll",
-    "VHT_NDP_Announcement",
-    "Control_Frame_Extension",
-    "Control_Wrapper",
-    "Block_Ack_Request",
-    "Block_Ack",
-    "PS_Poll",
-    "RTS",
-    "CTS",
-    "Ack",
-    "CF_End",
-    "CF_End_CF_Ack"
-};
-
-enum Data_Frame_Type {
-    Data,
-    Data_CF_Ack,
-    Data_CF_Poll,
-    Data_CF_Ack_CF_Poll,
-    Null_No_Data,
-    CF_Ack_No_Data,
-    CF_Poll_No_Data,
-    CF_Ack_CF_Poll_No_Data,
-    Qos_Data,
-    Qos_Data_CF_Ack,
-    Qos_Data_CF_Poll,
-    Qos_Data_CF_Ack_CF_Poll,
-    Qos_Null_No_Data,
-    Reserved,
-    Qos_CF_Poll_No_Data,
-    Qos_CF_Ack_CF_Poll,
-};
-
-const char* Data_Frame_Type_String[] = {
-    "Data",
-    "Data_CF_Ack",
-    "Data_CF_Poll",
-    "Data_CF_Ack_CF_Poll",
-    "Null_No_Data",
-    "CF_Ack_No_Data",
-    "CF_Poll_No_Data",
-    "CF_Ack_CF_Poll_No_Data",
-    "Qos_Data",
-    "Qos_Data_CF_Ack",
-    "Qos_Data_CF_Poll",
-    "Qos_Data_CF_Ack_CF_Poll",
-    "Qos_Null_No_Data",
-    "Reserved",
-    "Qos_CF_Poll_No_Data",
-    "Qos_CF_Ack_CF_Poll",
-};
-
-enum Extension_Frame_Type {
-    DMG_Beacon,
-    Reserved
-};
-
-const char* Extension_Frame_Type_String[] = {
-    "DMG_Beacon",
-    "Reserved"
+enum Extension_Frame_Subtype {
+    DMG_Beacon = 0,
+    Reserved = 1,
 };
 
 #endif

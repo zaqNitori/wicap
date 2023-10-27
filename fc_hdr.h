@@ -67,7 +67,7 @@ enum Mgmt_Frame_Type {
     Reserved
 };
 
-const char* Mgmt_Frame_Type_String = {
+const char* Mgmt_Frame_Type_String[] = {
     "Association_Request",
     "Association_Response",
     "Reassociation_Request",
@@ -105,7 +105,7 @@ enum Contorl_Frame_Type {
     CF_End_CF_Ack
 };
 
-const char* Contorl_Frame_Type_String = {
+const char* Contorl_Frame_Type_String[] = {
     "Reserved",
     "Reserved",
     "Reserved",
@@ -143,7 +143,7 @@ enum Data_Frame_Type {
     Qos_CF_Ack_CF_Poll,
 };
 
-const char* Data_Frame_Type_String = {
+const char* Data_Frame_Type_String[] = {
     "Data",
     "Data_CF_Ack",
     "Data_CF_Poll",
@@ -167,7 +167,7 @@ enum Extension_Frame_Type {
     Reserved
 };
 
-const char* Extension_Frame_Type_String = {
+const char* Extension_Frame_Type_String[] = {
     "DMG_Beacon",
     "Reserved"
 };

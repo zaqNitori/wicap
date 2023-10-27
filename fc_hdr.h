@@ -1,8 +1,6 @@
 #ifndef __FC_HDR_H
 #define __FC_HDR_H
 
-#include <stdio.h>
-
 extern void Show_Frame_Control_Info(unsigned short);
 
 struct fc_hdr {

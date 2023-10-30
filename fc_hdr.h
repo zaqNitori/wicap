@@ -21,7 +21,7 @@ struct fc_hdr {
 
 #define GET_Protocol_Version(hdr) (hdr & 0x03)
 #define GET_Type(hdr) (hdr >> 2 & 0x03)
-#define GET_Subtype(hdr) (hdr >> 4 & 0x03)
+#define GET_Subtype(hdr) (hdr >> 4 & 0x0f)
 #define GET_To_DS(hdr) (hdr >> 8 & 0x01)
 #define GET_From_DS(hdr) (hdr >> 9 & 0x01)
 #define GET_More_Frag(hdr) (hdr >> 10 & 0x01)

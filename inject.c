@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
 {
     pcap_t *handle;			/* Session handle */
     char *dev;			/* The device to sniff on */
+    int write_len;
 
     char errbuf[PCAP_ERRBUF_SIZE];	/* Error string */
 
@@ -63,23 +64,75 @@ int main(int argc, char *argv[])
     memcpy(packet, radiotapheader, sizeof(radiotapheader));
     memcpy(packet + sizeof(radiotapheader), ieee80211beacon, sizeof(ieee80211beacon));*/
 
+    // copy from wireshark RX radiotap header.
+    // Cost 80 bytes.
+    // unsigned char ieee80211[] = {
+    //     0x00,                                             // revision
+    //     0x00,                                             // Pad
+    //     0x38, 0x00,                                       // Header Length (56)
+    //     0x2f, 0x40, 0x40, 0xa0,                           // Present Flags 1
+    //     0x20, 0x08, 0x00, 0xa0,                           // Present Flags 2
+    //     0x20, 0x08, 0x00, 0x00,                           // Present Flags 3
+    //     0xf9, 0xe4, 0xd1, 0x9e, 0x00, 0x00, 0x00, 0x00,   // Timestamp
+    //     0x00,                                             // Flags
+    //     0x02,                                             // Data Rate
+    //     0x85, 0x09,                                       // Channel Freq (2437)
+    //     0xa0, 0x00,                                       // Channel Flags
+    //     0xd8,                                             // Antenna Signals 
+    //     0x00,                                             //
+    //     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   //
+    //     0xf9, 0xe4, 0xd1, 0x9e, 0x00, 0x00, 0x00, 0x00,   //
+    //     0x00, 0x00, 0x01, 0x01, 0xd1, 0x00, 0xd8, 0x01,   //
+    //     0x80, 0x00,                                       // Frame Control
+    //     0x00, 0x00,                                       // Duration ID
+    //     0xff, 0xff, 0xff, 0xff, 0xff, 0xee,               // DA
+    //     0xff, 0xff, 0xff, 0xff, 0xff, 0xee,               // SA
+    //     0xff, 0xff, 0xff, 0xff, 0xff, 0xee,               // BSS ID
+    //     0xb0, 0x22
+    // };
+
+    // radiotap header reducing
+    // Cost 62 bytes.
+    // unsigned char ieee80211[] = {
+    //     0x00,                                             // Version
+    //     0x00,                                             // Pad
+    //     0x26, 0x00,                                       // Header Length (38)
+    //     0x2f, 0x40, 0x40, 0x00,                           // Present Flags 1
+    //     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // Timestamp
+    //     0x00,                                             // Flags
+    //     0x00,                                             // Data Rates
+    //     0x3c, 0x14,                                       // Channel Freq
+    //     0x40, 0x01,                                       // Channel Flags
+    //     0x00, 0x00,                                       // antenna signals
+    //     0x00, 0x00,                                       // RX flags
+    //     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // Timestamp same as previous one
+    //     0x00, 0x00, 0x01, 0x01,                           // timestamp info
+    //     0x80, 0x00,                                       // Frame Control
+    //     0x00, 0x00,                                       // Duration ID
+    //     0xff, 0xff, 0xff, 0xff, 0xee, 0xee,               // DA
+    //     0xff, 0xff, 0xff, 0xff, 0xee, 0xee,               // SA
+    //     0xff, 0xff, 0xff, 0xff, 0xee, 0xee,               // BSS ID
+    //     0xb0, 0x22
+    // };
+
+    // radiotap header minimizing
+    // Cost 32 bytes.
     unsigned char ieee80211[] = {
-        /*0x00, 0x00, 0x38, 0x00, 0x2f, 0x40, 0x40, 0xa0,
-        0x20, 0x08, 0x00, 0xa0, 0x20, 0x08, 0x00, 0x00,   
-        0xf9, 0xe4, 0xd1, 0x9e, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x02, 0x85, 0x09, 0xa0, 0x00, 0xd8, 0x00,   
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0xf9, 0xe4, 0xd1, 0x9e, 0x00, 0x00, 0x00, 0x00,   
-        0x00, 0x00, 0x01, 0x01, 0xd1, 0x00, 0xd8, 0x01,*/
-        0x80, 0x00, 0x00, 0x00, 
-        0xff, 0xff, 0xff, 0xff, 0xff, 0xee,
-        0x40, 0xee, 0x15, 0xb7, 0x24, 0x54,
-        0x40, 0xee, 0x15, 0xb7, 0x24, 0x54,
+        0x00,                                             // Version
+        0x00,                                             // Pad
+        0x08, 0x00,                                       // Header Length (8)
+        0x00, 0x00, 0x00, 0x00,                           // Present Flags 1
+        0x80, 0x00,                                       // Frame Control
+        0x00, 0x00,                                       // Duration ID
+        0xff, 0xff, 0xff, 0xff, 0xee, 0xee,               // DA
+        0xff, 0xff, 0xff, 0xff, 0xee, 0xee,               // SA
+        0xff, 0xff, 0xff, 0xff, 0xee, 0xee,               // BSS ID
         0xb0, 0x22
     };
 
+    write_len = pcap_inject(handle, &ieee80211, sizeof(ieee80211));
 
-    if(pcap_inject(handle, &ieee80211, sizeof(ieee80211)) == -1) {
+    if(write_len == -1) {
         fprintf(stderr, "pcap inject error\n");
         return(2);
     }
@@ -87,7 +140,7 @@ int main(int argc, char *argv[])
 	/* cleanup */
 	pcap_close(handle);
     //free(packet);
-	printf("\nSend complete.\n");    
+	printf("\n%d bytes Send complete.\n", write_len);    
     
     return(0);
 }
